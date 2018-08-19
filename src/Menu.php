@@ -30,7 +30,8 @@ class Menu
     {
         $this->append([
             'action' => 'talk',
-            'text' => 'Thanks for calling our order status hotline.'
+            'text' => 'Thanks for calling Nexmo order status hotline for demo
+                      the Basic Interactive Voice Response (IVR) use case.'
         ]);
 
         $this->promptSearch();
@@ -39,15 +40,24 @@ class Menu
     public function searchAction($request)
     {
         if(isset($request['dtmf'])) {
-            $dates = [new \DateTime('yesterday'), new \DateTime('today'), new \DateTime('last week')];
-            $status = ['shipped', 'backordered', 'pending'];
+            if($request['dtmf']=='888') {
+              $this->append([
+                  'action' => 'talk',
+                  'text' => 'Your order of two hotdogs will be delivered to the white house.'
+              ]);
+            }
+            else {
+                $dates = [new \DateTime('yesterday'), new \DateTime('today'), new \DateTime('last week')];
+                $status = ['shipped', 'backordered', 'pending'];
 
-            $this->append([
-                'action' => 'talk',
-                'text' => 'Your order ' . $this->talkCharacters($request['dtmf'])
-                          . $this->talkStatus($status[array_rand($status)])
-                          . ' as  of ' . $this->talkDate($dates[array_rand($dates)])
-            ]);
+                $this->append([
+                    'action' => 'talk',
+                    'text' => 'Your order ' . $this->talkCharacters($request['dtmf'])
+                              . ', your order ' . $this->talkCharacters($request['dtmf'])
+                              . $this->talkStatus($status[array_rand($status)])
+                              . ' as  of ' . $this->talkDate($dates[array_rand($dates)])
+                ]);
+            }
         }
 
         $this->append([
@@ -62,13 +72,14 @@ class Menu
     {
         $this->append([
             'action' => 'talk',
-            'text' => 'Using the numbers on your phone, enter your order number followed by the pound sign'
+            'text' => 'enter 8 8 8 to get a demo status message or other numbers for a dummy message,
+                      end the input with a pound sign'
         ]);
 
         $this->append([
             'action' => 'input',
             'eventUrl' => [$this->config['base_path'] . '/search'],
-            'timeOut' => '10',
+            'timeOut' => '30',
             'submitOnHash' => true
         ]);
     }
