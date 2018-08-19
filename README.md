@@ -1,79 +1,54 @@
-# Basic Phone Menu using PHP and the Nexmo Voice API
+# Basic Interactive Voice Response (IVR) Phone Menu
+## Based on PHP and the Nexmo Voice API
 
-This app uses the Nexmo Voice API to demonstrate an interactive order status phone menu.
-
-* Callers can search for orders by order ID.
-* If the caller's number is found, they can get the status of their latest order.
+* This application is an interactive order status phone menu.
+* Callers can search orders by order ID or get their order status by number.
 
 ## Prerequisites
+* One Nexmo Virtual Number
+* Install PHP [composer](http://getcomposer.org/)
+* Install and setup [Nexmo CLI][cli]
+* Setup [ngrok][ngrok] on local machine
 
-You will need:
-
-* At least one Nexmo Virtual Number (Phone Number)
-* [composer](http://getcomposer.org/) installed
-* The [Nexmo CLI][cli] installed
-* A public web server to host this web app, or [ngrok][ngrok] on your local development system.
-
-## Installation
-
+## Step by Step Guide
+1. Clone source code repo and prepare PHP code:
 ```sh
 git clone https://github.com/nexmo/php-phone-menu.git
 cd php-phone-menu
 composer install
 ```
-
-## Configuration
-
-Copy `config.php.dist` to `config.php`, and add public URL Nexmo can use to access the application. If you're using 
-[ngrok][ngrok] you'll need to know what subdomain will be used to expose your application.  
-
-## Setup (Using Nexmo CLI)
-
-Create the nexmo application, using the [Nexmo CLI][cli] and take note of the application universally unique identifier (UUID):
-
+2. Publish local port 8080 to the Internet:
 ```sh
-nexmo app:create demo-app --keyfile private.key http://example.com http://example.com
+./ngrok http 8080
+```
+3. Note down the ngrok public URL `ngrok_url`, copy `config.php.dist` to
+`config.php`, and add `ngrok_url` into it.  
+4. Setup Nexmo voice application and note down the app ID `nexmo_app`:
+```sh
+nexmo app:create phone-menu [ngrok_url]/answer [ngrok_url]/event
+```
+4. Buy a US Nexmo virtual number `nexmo_lvn` to provide the IVR service.
+```sh
+nexmo number:buy --country_code US --confirm
+```
+5. Link the virtual number to the voice application:
+```sh
+nexmo link:app [nexmo_lvn] [nexmo_app]
 ```
 
-Buy numbers for calls that you would like to track. The following example buys the first available number in a given country by country code.
-
-```sh
-nexmo number:buy --country_code [YOUR_COUNTRY_CODE]
-```
-
-Link the virtual numbers to the app id with the Nexmo CLI:
-
-```sh
-nexmo link:app [NUMBER] [app-id]
-```
-
-Update the app to set the webhook urls to be your server (or [ngrok][ngrok] subdomain) instead of the example.com 
-placeholders used at creation.
-
-```sh
-nexmo app:update ['app-id'] demo-app [your url]/answer [your url]/event
-```
-
-### Running the App
-
-Using the PHP development server:
-
+## Run the application
+1. Start the local PHP development server:
 ```sh
 php -S 0:8080 ./public/index.php
 ```
+2. Call the Nexmo virtual number `nexmo_lvn` to check order status.
+3. System will reply a message about a dummy order, number generated from DTMF,
+with status in random between `shipped`, `backordered`, and `pending`, and with
+date in random between the date of `yesterday`, `today` and `last week`.
 
-To expose the application to the public internet:
-
-```sh
-ngrok http 8080
-```
-
-Or you can configure a webserver to serve the app using `/public` as the webroot.
-
-### Using the App
-
-Call the virtual number to check order status over the phone. You can enter any
-order ID as the system chooses a random status.
+## Notice
+1. DTMF is not always correctly caught by the system.
+2. Update `ngrok_url` for `config.php` and the voice app if reload ngrok.
 
 [php-lib]: https://github.com/Nexmo/nexmo-php
 [ngrok]: https://ngrok.com/
