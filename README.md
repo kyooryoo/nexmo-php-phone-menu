@@ -1,8 +1,8 @@
 # Basic Interactive Voice Response (IVR) Phone Menu
 ## Based on PHP and the Nexmo Voice API
 
-* This application is an interactive order status phone menu.
-* Callers can search orders by order ID or get their order status by number.
+* This app enables users to check order status through an interactive phone menu.
+* Users can search orders by order ID or get their order status by their numbers.
 
 ## Prerequisites
 * One Nexmo Virtual Number

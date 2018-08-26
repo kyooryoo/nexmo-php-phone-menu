@@ -59,6 +59,18 @@ class Menu
                 ]);
             }
         }
+        elseif($request['from']==$this->config['caller_number'] ){
+          $this->append([
+              'action' => 'talk',
+              'text' => 'The order of'.$this->config['caller_number'].'will be delivered tommorow.'
+          ]);
+        }
+        else {
+          $this->append([
+              'action' => 'talk',
+              'text' => 'Your order status cannot be loated at this time.'
+          ]);
+        }
 
         $this->append([
             'action' => 'talk',
@@ -72,8 +84,8 @@ class Menu
     {
         $this->append([
             'action' => 'talk',
-            'text' => 'enter 8 8 8 to get a demo status message or other numbers for a dummy message,
-                      end the input with a pound sign'
+            'text' => 'Enter triple 8 to get a demo message or else for a dummy message,
+                      end with a pound sign. Enter pound to search order with your number.'
         ]);
 
         $this->append([

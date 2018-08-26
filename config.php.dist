@@ -2,4 +2,5 @@
 return [
     //Internet accessible URL for the demo (Nexmo will make a request when a call is received).
     'base_path' => 'http://example.com',
+    'caller_number' => '',
 ];
